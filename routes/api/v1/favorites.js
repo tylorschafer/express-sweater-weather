@@ -41,20 +41,18 @@ router.post('/', (request, response) => {
 router.delete('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await findByKey(favorite.api_key).then(function (result) { return result.id })
+    const userId = await findByKey(favorite.api_key).then(function (result) { return result })
 
     if (userId) {
       database('favorites').where('location', favorite.location).del()
         .then(like => {
-          response.status(204)
+          response.status(204).json({ status: '204' })
         })
         .catch(error => {
-          response.status(500).json({ error });
+          response.status(500).json({ error })
         })
     } else {
-      return response
-        .status(422)
-        .send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })

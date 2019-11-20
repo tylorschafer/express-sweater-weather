@@ -5,7 +5,7 @@ const environment = process.env.NODE_ENV || 'development'
 const configuration = require('../../../knexfile')[environment]
 const database = require('knex')(configuration)
 
-router.post('api/v1/favorites', (request, response) => {
+router.post('/', (request, response) => {
   const favorite = request.body
 
   for (const requiredParameter of ['location', 'api_key']) {

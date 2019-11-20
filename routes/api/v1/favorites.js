@@ -31,9 +31,7 @@ router.post('/', (request, response) => {
           response.status(500).json({ error })
         })
     } else {
-      return response
-        .status(422)
-        .send({ error: 'Bad api_key' })
+      response.status(422).send({ error: 'Bad api_key' })
     }
   })()
 })

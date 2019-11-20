@@ -8,6 +8,7 @@ const configuration = require('./knexfile')[environment]
 
 var indexRouter = require('./routes/index')
 var favoritesRouter = require('./routes/api/v1/favorites')
+var forecastsRouter = require('./routes/api/v1/forecasts')
 
 var app = express()
 

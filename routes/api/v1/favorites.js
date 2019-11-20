@@ -12,7 +12,7 @@ function findByKey (key) {
 router.post('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await findByKey(favorite.api_key).then(function (result) { return result.id })
+    const userId = await findByKey(favorite.api_key).then(function (result) { return result })
 
     if (await userId) {
       for (const requiredParameter of ['location', 'api_key']) {
@@ -23,7 +23,7 @@ router.post('/', (request, response) => {
         }
       }
 
-      database('favorites').insert({ location: await favorite.location, user_id: userId })
+      database('favorites').insert({ location: await favorite.location, user_id: await userId.id })
         .then(like => {
           response.status(200).json({ message: `${favorite.location} has been added to your favorites` })
         })
@@ -31,9 +31,7 @@ router.post('/', (request, response) => {
           response.status(500).json({ error })
         })
     } else {
-      return response
-        .status(422)
-        .send({ error: 'Bad api_key' })
+      response.status(422).send({ error: 'Bad api_key' })
     }
   })()
 })

@@ -23,10 +23,9 @@ router.post('/', (request, response) => {
         }
       }
 
-      database('favorites').insert({ location: favorite.location, user_id: userId })
-        .then(favorite => {
-          console.log(favorite)
-          response.status(200).json({ message: `"${favorite.location}" has been added to your favorites` })
+      database('favorites').insert({ location: await favorite.location, user_id: userId })
+        .then(like => {
+          response.status(200).json({ message: `${favorite.location} has been added to your favorites` })
         })
         .catch(error => {
           response.status(500).json({ error })

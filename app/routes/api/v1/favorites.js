@@ -1,18 +1,12 @@
-var express = require('express')
-var router = express.Router()
-
-const environment = process.env.NODE_ENV || 'development'
-const configuration = require('../../../knexfile')[environment]
-const database = require('knex')(configuration)
-
-function findByKey (key) {
-  return database.select('id').from('users').where('api_key', key).first()
-}
+const setup = require('./index')
+const router = setup.router
+const findKey = setup.findByKey
+const db = setup.database
 
 router.post('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await findByKey(favorite.api_key).then(function (result) { return result })
+    const userId = await findKey(favorite.api_key).then(function (result) { return result })
 
     if (await userId) {
       for (const requiredParameter of ['location', 'api_key']) {
@@ -23,7 +17,7 @@ router.post('/', (request, response) => {
         }
       }
 
-      database('favorites').insert({ location: await favorite.location, user_id: await userId.id })
+      db('favorites').insert({ location: await favorite.location, user_id: await userId.id })
         .then(like => {
           response.status(200).json({ message: `${favorite.location} has been added to your favorites` })
         })
@@ -39,10 +33,10 @@ router.post('/', (request, response) => {
 router.delete('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await findByKey(favorite.api_key).then(function (result) { return result })
+    const userId = await findKey(favorite.api_key).then(function (result) { return result })
 
     if (userId) {
-      database('favorites').where('location', favorite.location).del()
+      db('favorites').where('location', favorite.location).del()
         .then(like => {
           response.status(204).json({ status: '204' })
         })
@@ -55,4 +49,4 @@ router.delete('/', (request, response) => {
   })()
 })
 
-module.exports = router
+module.exports = setup.router

@@ -2,6 +2,9 @@ const setup = require('./index')
 const router = setup.router
 const findKey = setup.findByKey
 const db = setup.database
+const formatter = require('../../../formatters/forecastFormatter')
+const darksky = require('../../../services/darkskyService')
+const geocode = require('../../../services/googleGeocodeService')
 
 router.post('/', (request, response) => {
   (async () => {
@@ -43,6 +46,25 @@ router.delete('/', (request, response) => {
         .catch(error => {
           response.status(500).json({ error })
         })
+    } else {
+      response.status(422).json({ error: 'Bad api_key' })
+    }
+  })()
+})
+
+router.get('/', (request, response) => {
+  (async () => {
+    const req = request.body
+    const userId = await findKey(req.api_key).then(result => { return result })
+    if (userId) {
+      var favorites = await db('favorites').where('user_id', userId.id).then(result => { return result })
+      var summaries = []
+      favorites.forEach(async function (favorite, index) {
+        var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
+        var darkdata = await darksky(coordinates).then(response => response.json())
+        summaries.push(await formatter.formatCurrently(darkdata))
+      })
+      return response.status(200).send(summaries)
     } else {
       response.status(422).json({ error: 'Bad api_key' })
     }

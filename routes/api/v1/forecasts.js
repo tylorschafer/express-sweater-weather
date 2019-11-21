@@ -22,7 +22,7 @@ router.get('/', (request, response) => {
     const address = request.query.location
 
     if (userId) {
-      var coordinates = await googleGeocode(address).then(result => JSON.stringify(result.body))
+      var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
       return console.log(coordinates)
     } else {
       response.status(422).send({ error: 'Bad api_key' })

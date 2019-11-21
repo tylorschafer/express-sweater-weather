@@ -23,20 +23,45 @@ function darkskyForecast (coordinates) {
 }
 
 function formatCurrently (darkResponse) {
-  let result = {}
-  result['summary'] = darkResponse.currently.summary
-  result['icon'] = darkResponse.currently.icon
-  result['precipIntensity'] = darkResponse.currently.precipIntensity
-  result['precipProbability'] = darkResponse.currently.precipProbability
-  result['temperature'] = darkResponse.currently.temperature
-  result['humidity'] = darkResponse.currently.humidity
-  result['pressure'] = darkResponse.currently.pressure
-  result['windSpeed'] = darkResponse.currently.windSpeed
-  result['windGust'] = darkResponse.currently.windGust
-  result['windBearing'] = darkResponse.currently.windBearing
-  result['cloudCover'] = darkResponse.currently.cloudCover
-  result['visibility'] = darkResponse.currently.visibility
-  return result
+  let currently = {}
+  currently['summary'] = darkResponse.currently.summary
+  currently['icon'] = darkResponse.currently.icon
+  currently['precipIntensity'] = darkResponse.currently.precipIntensity
+  currently['precipProbability'] = darkResponse.currently.precipProbability
+  currently['temperature'] = darkResponse.currently.temperature
+  currently['humidity'] = darkResponse.currently.humidity
+  currently['pressure'] = darkResponse.currently.pressure
+  currently['windSpeed'] = darkResponse.currently.windSpeed
+  currently['windGust'] = darkResponse.currently.windGust
+  currently['windBearing'] = darkResponse.currently.windBearing
+  currently['cloudCover'] = darkResponse.currently.cloudCover
+  currently['visibility'] = darkResponse.currently.visibility
+  return currently
+}
+
+function formatHourly (darkResponse) {
+  let hourly = {}
+  hourly['summary'] = darkResponse.hourly.summary 
+  hourly['icon'] = darkResponse.hourly.icon
+  hourly['data'] = []
+  darkResponse.hourly.data.slice(0, 9).forEach(function (item, index) {
+    let hour = {}
+    hour['time'] = item.time
+    hour['time'] = item.summary
+    hour['icon'] = item.icon
+    hour['precipIntensity'] = item.precipIntensity
+    hour['precipProbability'] = item.precipProbability
+    hour['temperature'] = item.temperature
+    hour['humidity'] = item.humidity
+    hour['pressure'] = item.pressure
+    hour['windSpeed'] = item.windSpeed
+    hour['windGust'] = item.windGust
+    hour['windBearing'] = item.windBearing
+    hour['cloudCover'] = item.cloudCover
+    hour['visibility'] = item.visibility
+    hourly['data'].push(hour)
+  })
+  return hourly
 }
 
 router.get('/', (request, response) => {
@@ -48,7 +73,8 @@ router.get('/', (request, response) => {
     if (userId) {
       var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
       var forecast = (await darkskyForecast(coordinates).then(response => response.json()))
-      return console.log(await formatCurrently(forecast))
+      // return console.log(await formatCurrently(forecast))
+      return console.log(await formatHourly(forecast))
     } else {
       response.status(422).send({ error: 'Bad api_key' })
     }

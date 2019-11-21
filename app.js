@@ -20,5 +20,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/api/v1/favorites', favoritesRouter)
+app.use('/api/v1/forecast', forecastsRouter)
 
 module.exports = app

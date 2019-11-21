@@ -17,9 +17,9 @@ router.get('/', (request, response) => {
       var forecast = {}
 
       forecast.location = address
-      forecast.currently = await formatter.formatCurrently(darkdata)
-      forecast.hourly = await formatter.formatHourly(darkdata)
-      forecast.daily = await formatter.formatDaily(darkdata)
+      forecast.currently = formatter.formatCurrently(darkdata)
+      forecast.hourly = formatter.formatHourly(darkdata)
+      forecast.daily = formatter.formatDaily(darkdata)
 
       response.status(200).send(forecast)
     } else {

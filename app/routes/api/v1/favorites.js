@@ -57,18 +57,22 @@ router.get('/', (request, response) => {
     const req = request.body
     const userId = await findKey(req.api_key).then(result => { return result })
     if (userId) {
-      var favorites = await db('favorites').where('user_id', userId.id).then(result => { return result })
-      var summaries = []
-      favorites.forEach(async function (favorite, index) {
-        var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
-        var darkdata = await darksky(coordinates).then(response => response.json())
-        summaries.push(await formatter.formatCurrently(darkdata))
-      })
-      return response.status(200).send(summaries)
+      const favorites = await db('favorites').where('user_id', userId.id).then(result => { return result })   
+      response.status(200).json(mapFavs(favorites))
     } else {
-      response.status(422).json({ error: 'Bad api_key' })
+      response.status(422).send({ error: 'Bad api_key' })
     }
   })()
 })
+
+function mapFavs (favorites) {
+  const summaries = []
+  favorites.forEach(async function (favorite) {
+    var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
+    var darkdata = await darksky(coordinates).then(response => response.json())
+    summaries.push(formatter.formatCurrently(darkdata))
+  })
+  return summaries
+}
 
 module.exports = setup.router

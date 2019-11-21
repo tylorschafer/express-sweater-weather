@@ -1,8 +1,9 @@
 const setup = require('./index')
+const express = require('express')
 const formatter = require('../../../formatters/forecastFormatter')
 const darksky = require('../../../services/darkskyService')
 const geocode = require('../../../services/googleGeocodeService')
-const router = setup.router
+const router = express.Router()
 const findKey = setup.findByKey
 
 router.get('/', (request, response) => {
@@ -28,4 +29,4 @@ router.get('/', (request, response) => {
   })()
 })
 
-module.exports = setup.router
+module.exports = router

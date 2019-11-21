@@ -1,9 +1,12 @@
 const setup = require('./index')
+const router = setup.router
+const findKey = setup.findByKey
+const db = setup.database
 
-setup.router.post('/', (request, response) => {
+router.post('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await setup.findByKey(favorite.api_key).then(function (result) { return result })
+    const userId = await findKey(favorite.api_key).then(function (result) { return result })
 
     if (await userId) {
       for (const requiredParameter of ['location', 'api_key']) {
@@ -14,7 +17,7 @@ setup.router.post('/', (request, response) => {
         }
       }
 
-      setup.database('favorites').insert({ location: await favorite.location, user_id: await userId.id })
+      db('favorites').insert({ location: await favorite.location, user_id: await userId.id })
         .then(like => {
           response.status(200).json({ message: `${favorite.location} has been added to your favorites` })
         })
@@ -27,13 +30,13 @@ setup.router.post('/', (request, response) => {
   })()
 })
 
-setup.router.delete('/', (request, response) => {
+router.delete('/', (request, response) => {
   (async () => {
     const favorite = request.body
-    const userId = await findByKey(favorite.api_key).then(function (result) { return result })
+    const userId = await findKey(favorite.api_key).then(function (result) { return result })
 
     if (userId) {
-      setup.database('favorites').where('location', favorite.location).del()
+      db('favorites').where('location', favorite.location).del()
         .then(like => {
           response.status(204).json({ status: '204' })
         })

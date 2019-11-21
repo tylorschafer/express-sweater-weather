@@ -1,22 +1,25 @@
 const setup = require('./index')
 const formatter = require('../../../formatters/forecastFormatter')
+const router = setup.router
+const fetch = setup.fetch
+const findKey = setup.findByKey
 
 function googleGeocode (address) {
-  return setup.fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)
+  return fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)
     .catch((error) => console.error({ error }))
 }
 
 function darkskyForecast (coordinates) {
   const lat = coordinates.lat
   const long = coordinates.lng
-  return setup.fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
+  return fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
     .catch((error) => console.error({ error }))
 }
 
-setup.router.get('/', (request, response) => {
+router.get('/', (request, response) => {
   (async () => {
     const key = request.body.api_key
-    const userId = await setup.findByKey(key).then(result => { return result })
+    const userId = await findKey(key).then(result => { return result })
     const address = request.query.location
 
     if (userId) {

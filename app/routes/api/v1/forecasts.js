@@ -1,5 +1,5 @@
 const setup = require('./index')
-const formatter = require('../../../app/formatters/forecastFormatter')
+const formatter = require('../../../formatters/forecastFormatter')
 
 function googleGeocode (address) {
   return setup.fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)

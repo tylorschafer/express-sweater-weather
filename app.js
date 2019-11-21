@@ -6,9 +6,9 @@ var logger = require('morgan')
 const environment = process.env.NODE_ENV || 'development'
 const configuration = require('./knexfile')[environment]
 
-var indexRouter = require('./routes/index')
-var favoritesRouter = require('./routes/api/v1/favorites')
-var forecastsRouter = require('./routes/api/v1/forecasts')
+var indexRouter = require('./app/routes/index')
+var favoritesRouter = require('./app/routes/api/v1/favorites')
+var forecastsRouter = require('./app/routes/api/v1/forecasts')
 
 var app = express()
 

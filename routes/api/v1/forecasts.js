@@ -22,6 +22,23 @@ function darkskyForecast (coordinates) {
     .catch((error) => console.error({ error }))
 }
 
+function formatCurrently (darkResponse) {
+  let result = {}
+  result['summary'] = darkResponse.currently.summary
+  result['icon'] = darkResponse.currently.icon
+  result['precipIntensity'] = darkResponse.currently.precipIntensity
+  result['precipProbability'] = darkResponse.currently.precipProbability
+  result['temperature'] = darkResponse.currently.temperature
+  result['humidity'] = darkResponse.currently.humidity
+  result['pressure'] = darkResponse.currently.pressure
+  result['windSpeed'] = darkResponse.currently.windSpeed
+  result['windGust'] = darkResponse.currently.windGust
+  result['windBearing'] = darkResponse.currently.windBearing
+  result['cloudCover'] = darkResponse.currently.cloudCover
+  result['visibility'] = darkResponse.currently.visibility
+  return result
+}
+
 router.get('/', (request, response) => {
   (async () => {
     const key = request.body.api_key
@@ -31,7 +48,7 @@ router.get('/', (request, response) => {
     if (userId) {
       var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
       var forecast = (await darkskyForecast(coordinates).then(response => response.json()))
-      return console.log(forecast)
+      return console.log(await formatCurrently(forecast))
     } else {
       response.status(422).send({ error: 'Bad api_key' })
     }

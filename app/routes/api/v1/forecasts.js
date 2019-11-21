@@ -1,21 +1,9 @@
 const setup = require('./index')
 const formatter = require('../../../formatters/forecastFormatter')
 const darksky = require('../../../services/darkskyService')
+const geocode = require('../../../services/googleGeocodeService')
 const router = setup.router
-const fetch = setup.fetch
 const findKey = setup.findByKey
-
-function googleGeocode (address) {
-  return fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)
-    .catch((error) => console.error({ error }))
-}
-
-// function darkskyForecast (coordinates) {
-//   const lat = coordinates.lat
-//   const long = coordinates.lng
-//   return fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
-//     .catch((error) => console.error({ error }))
-// }
 
 router.get('/', (request, response) => {
   (async () => {
@@ -24,7 +12,7 @@ router.get('/', (request, response) => {
     const address = request.query.location
 
     if (userId) {
-      var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
+      var coordinates = (await geocode(address).then(response => response.json())).results[0].geometry.location
       var darkdata = (await darksky(coordinates).then(response => response.json()))
       var forecast = {}
 

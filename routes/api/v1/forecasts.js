@@ -15,6 +15,13 @@ function googleGeocode (address) {
     .catch((error) => console.error({ error }))
 }
 
+function darkskyForecast (coordinates) {
+  const lat = coordinates.lat 
+  const long = coordinates.lng 
+  return fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
+    .catch((error) => console.error({ error }))
+}
+
 router.get('/', (request, response) => {
   (async () => {
     const key = request.body.api_key
@@ -23,7 +30,8 @@ router.get('/', (request, response) => {
 
     if (userId) {
       var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
-      return console.log(coordinates)
+      var forecast = (await darkskyForecast(coordinates).then(response => response.json()))
+      return console.log(forecast)
     } else {
       response.status(422).send({ error: 'Bad api_key' })
     }

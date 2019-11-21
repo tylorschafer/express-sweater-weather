@@ -1,10 +1,11 @@
 const setup = require('./index')
-const router = setup.router
-const findKey = setup.findByKey
-const db = setup.database
+const express = require('express')
 const formatter = require('../../../formatters/forecastFormatter')
 const darksky = require('../../../services/darkskyService')
 const geocode = require('../../../services/googleGeocodeService')
+const router = express.Router()
+const findKey = setup.findByKey
+const db = setup.database
 
 router.post('/', (request, response) => {
   (async () => {
@@ -81,4 +82,4 @@ async function asyncForEach (array, callback) {
   }
 }
 
-module.exports = setup.router
+module.exports = router

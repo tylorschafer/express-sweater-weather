@@ -8,8 +8,6 @@ function findByKey (key) {
 }
 
 module.exports = {
-  express: express,
-  router: router,
   environment: environment,
   configuration: configuration,
   database: database,

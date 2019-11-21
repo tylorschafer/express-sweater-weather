@@ -65,15 +65,6 @@ router.get('/', (request, response) => {
   })()
 })
 
-// async function mapFavs (favorites) {
-//   const summaries = favorites.map(async function (favorite) {
-//     var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
-//     var darkdata = await darksky(coordinates).then(response => response.json())
-//     formatter.formatCurrently(darkdata)
-//   })
-//   console.log(summaries)
-// }
-
 async function mapFavs (favorites) {
   const forecasts = []
   await asyncForEach(favorites, async (favorite) => {
@@ -84,9 +75,9 @@ async function mapFavs (favorites) {
   return forecasts
 }
 
-async function asyncForEach(array, callback) {
+async function asyncForEach (array, callback) {
   for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
+    await callback(array[index], index, array)
   }
 }
 

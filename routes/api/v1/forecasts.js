@@ -104,10 +104,15 @@ router.get('/', (request, response) => {
 
     if (userId) {
       var coordinates = (await googleGeocode(address).then(response => response.json())).results[0].geometry.location
-      var forecast = (await darkskyForecast(coordinates).then(response => response.json()))
-      // return console.log(await formatCurrently(forecast))
-      // return console.log(await formatHourly(forecast))
-      return console.log(await formatDaily(forecast))
+      var darksky = (await darkskyForecast(coordinates).then(response => response.json()))
+      var forecast = {}
+
+      forecast.location = address
+      forecast.currently = await formatCurrently(darksky)
+      forecast.hourly = await formatHourly(darksky)
+      forecast.daily = await formatDaily(darksky)
+
+      response.status(200).send(forecast)
     } else {
       response.status(422).send({ error: 'Bad api_key' })
     }

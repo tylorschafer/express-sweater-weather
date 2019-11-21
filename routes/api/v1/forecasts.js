@@ -1,24 +1,14 @@
-var express = require('express')
-var router = express.Router()
-
-const environment = process.env.NODE_ENV || 'development'
-const configuration = require('../../../knexfile')[environment]
-const database = require('knex')(configuration)
-const fetch = require('node-fetch')
-
-function findByKey (key) {
-  return database.select('id').from('users').where('api_key', key).first()
-}
+const setup = require('./index')
 
 function googleGeocode (address) {
-  return fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)
+  return setup.fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.GOOGLE_API_KEY}&address=${address}`)
     .catch((error) => console.error({ error }))
 }
 
 function darkskyForecast (coordinates) {
   const lat = coordinates.lat
   const long = coordinates.lng
-  return fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
+  return setup.fetch(`https://api.darksky.net/forecast/${process.env.DARKSKY_API_KEY}/${lat},${long}`)
     .catch((error) => console.error({ error }))
 }
 
@@ -96,10 +86,10 @@ function formatDaily (darkResponse) {
   return daily
 }
 
-router.get('/', (request, response) => {
+setup.router.get('/', (request, response) => {
   (async () => {
     const key = request.body.api_key
-    const userId = await findByKey(key).then(result => { return result })
+    const userId = await setup.findByKey(key).then(result => { return result })
     const address = request.query.location
 
     if (userId) {
@@ -119,4 +109,4 @@ router.get('/', (request, response) => {
   })()
 })
 
-module.exports = router
+module.exports = setup.router

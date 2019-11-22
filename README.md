@@ -9,7 +9,7 @@ Express Sweater Weather was written by Tylor Schafer in 4 days, as a school proj
 ## Local Setup
 
 1. Fork and Clone down this repo
-1. Install all dependecies by navigating to the root project directory in terminal and running the `npm install`.
+1. Install all dependecies by navigating to the root project directory in terminal and running `npm install`.
 1. Enter `psql` mode and run `CREATE DATABASE express_sweater_weather_dev;`to create a the PostgreSQL database.
 1. Run the table migrations with `knex migrate:latest`
 1. Seed the database with `knex seed:run`

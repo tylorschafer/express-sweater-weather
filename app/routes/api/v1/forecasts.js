@@ -16,9 +16,9 @@ router.get('/', (request, response) => {
     if (userId) {
       var coordinates = (await geocode(address).then(response => response.json())).results[0].geometry.location
       var darkData = (await darksky(coordinates).then(response => response.json()))
-      response.status(200).send(formatForecast(address, darkData))
+      response.status(200).json(formatForecast(address, darkData))
     } else {
-      response.status(422).send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })

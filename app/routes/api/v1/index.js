@@ -12,7 +12,7 @@ function paramChecker (req, response, params) {
     if (!req[requiredParameter]) {
       return response
         .status(422)
-        .send({ error: `Expected format: { param: <STRING>, api_key: <STRING> }. You're missing a "${requiredParameter}" property.` })
+        .json({ error: `Expected format: { param: <STRING>, api_key: <STRING> }. You're missing a "${requiredParameter}" property.` })
     }
   }
 }

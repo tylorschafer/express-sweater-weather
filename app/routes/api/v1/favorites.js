@@ -1,8 +1,8 @@
 const setup = require('./index')
 const express = require('express')
 const formatter = require('../../../formatters/forecastFormatter')
-const darksky = require('../../../services/darkskyService').default
-const geocode = require('../../../services/googleGeocodeService').default
+const darksky = require('../../../services/darkskyService')
+const geocode = require('../../../services/googleGeocodeService')
 const router = express.Router()
 const paramCheck = setup.paramChecker
 const findKey = setup.findByKey
@@ -69,9 +69,13 @@ router.get('/', (request, response) => {
 async function mapFavs (favorites) {
   const forecasts = []
   await asyncForEach(favorites, async (favorite) => {
+    console.log(favorite.location)
     var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
     var darkdata = await darksky(coordinates).then(response => response.json())
-    forecasts.push(formatter.formatCurrently(darkdata))
+    const weatherSummary = {}
+    weatherSummary.location = favorite.location
+    weatherSummary.current_weather = formatter.formatCurrently(darkdata)
+    forecasts.push(weatherSummary)
   })
   return forecasts
 }

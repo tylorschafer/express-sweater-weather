@@ -4,7 +4,7 @@ Express Sweater Weather is a Express node.js REST API that returns detailed weat
 
 ## Contributor 
 
-All the code for this application was written by Tylor Schafer. Express Sweater weather was developed in 4 days as a school project at Turing School of Software and design.
+Express Sweater Weather was written by Tylor Schafer in 4 days, as a school project at Turing School of Software and design.
 
 ## Local Setup
 

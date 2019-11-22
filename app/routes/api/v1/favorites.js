@@ -1,8 +1,8 @@
 const setup = require('./index')
 const express = require('express')
 const formatter = require('../../../formatters/forecastFormatter')
-const darksky = require('../../../services/darkskyService')
-const geocode = require('../../../services/googleGeocodeService')
+const darksky = require('../../../services/darkskyService').default
+const geocode = require('../../../services/googleGeocodeService').default
 const router = express.Router()
 const paramCheck = setup.paramChecker
 const findKey = setup.findByKey
@@ -12,18 +12,23 @@ router.post('/', (request, response) => {
   (async () => {
     const req = request.body
     const userId = await findKey(req.api_key).then(result => result)
+    const locationCheck = await db('favorites').where('user_id', userId.id).where('location', req.location)
 
     if (userId) {
       paramCheck(req, response, ['location', 'api_key'])
-      db('favorites').insert({ location: req.location, user_id: userId.id })
-        .then(like => {
-          response.status(200).send({ message: `${req.location} has been added to your favorites` })
-        })
-        .catch(error => {
-          response.status(500).send({ error })
-        })
+      if (locationCheck.length === 0) {
+        db('favorites').insert({ location: req.location, user_id: userId.id })
+          .then(like => {
+            response.status(200).json({ message: `${req.location} has been added to your favorites` })
+          })
+          .catch(error => {
+            response.status(500).json({ error })
+          })
+      } else {
+        response.status(422).json(`You have already added ${req.location} to your favorites.`)
+      }
     } else {
-      response.status(422).send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })
@@ -37,13 +42,13 @@ router.delete('/', (request, response) => {
       paramCheck(req, response, ['location', 'api_key'])
       db('favorites').where('location', req.location).del()
         .then(like => {
-          response.status(204).send({ status: '204' })
+          response.status(204).json({ status: '204' })
         })
         .catch(error => {
-          response.status(500).send({ error })
+          response.status(500).json({ error })
         })
     } else {
-      response.status(422).send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })
@@ -53,11 +58,10 @@ router.get('/', (request, response) => {
     const req = request.body
     const userId = await findKey(req.api_key).then(result => result)
     if (userId) {
-      paramCheck(req, response, ['api_key'])
       const favorites = await db('favorites').where('user_id', userId.id).then(result => result)
-      response.status(200).send(await mapFavs(favorites))
+      response.status(200).json(await mapFavs(favorites))
     } else {
-      response.status(422).send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })

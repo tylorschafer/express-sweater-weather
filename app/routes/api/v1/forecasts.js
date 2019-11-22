@@ -13,6 +13,7 @@ router.get('/', (request, response) => {
     const address = request.query.location
 
     if (userId) {
+      console.log((await geocode(address).then(response => response.json())))
       var coordinates = (await geocode(address).then(response => response.json())).results[0].geometry.location
       var darkdata = (await darksky(coordinates).then(response => response.json()))
       var forecast = {}

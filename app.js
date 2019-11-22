@@ -22,4 +22,5 @@ app.use('/', indexRouter)
 app.use('/api/v1/favorites', favoritesRouter)
 app.use('/api/v1/forecast', forecastsRouter)
 
+require('dotenv').config();
 module.exports = app

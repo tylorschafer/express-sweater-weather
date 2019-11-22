@@ -1,6 +1,10 @@
 ## Express Sweater Weather
 
-Express Sweater Weather is a Express node.js REST API that returns deatiled weather data. Users can favorite locations, delete locations, and return current forecasts for all favorited locations. Express Sweater Weather was built in 4 days as a school project at Turing School of Software and design.
+Express Sweater Weather is a Express node.js REST API that returns detailed weather data. Users can favorite locations, delete locations, and return current forecasts for all favorited locations.
+
+## Contributor 
+
+All the code for this application was written by Tylor Schafer. Express Sweater weather was developed in 4 days as a school project at Turing School of Software and design.
 
 ## Local Setup
 

@@ -12,3 +12,5 @@ Express Sweater Weather is a Express node.js REST API that returns deatiled weat
 
 **Heroku Production Link**
   * You can access the production endpoints of this application at https://ts-express-sweater-weather.herokuapp.com/
+
+<iframe width="560" height="315" src='https://dbdiagram.io/embed/5dd77358edf08a25543e3af7'> </iframe>

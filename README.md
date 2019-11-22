@@ -35,7 +35,7 @@ body:
  }
 ```
 
-## 1. `GET /api/v1/forecast?location=<YOUR_LOCATION>`
+**1.** `GET /api/v1/forecast?location=<YOUR_LOCATION>`
    * Summary: Returns a detailed forecast for chosen location
    * Headers: 
    ``` Content-Type: application/json
@@ -118,7 +118,7 @@ body:
    }
  }
    ```
-## 2. `POST /api/v1/favorites`
+**2.** `POST /api/v1/favorites`
    * Summary: Adds a location to favorites
    * Headers: 
    ```
@@ -143,7 +143,7 @@ body:
      "message": "Denver, CO has been added to your favorites",
    }
    ```
-## 3. `GET /api/v1/favorites`
+**3.** `GET /api/v1/favorites`
    * Summary: Returns a current forecast for all favorited locations.
    * Headers: 
    ```
@@ -197,7 +197,7 @@ body:
    }
  ]
    ```
-## 4. `DELETE /api/v1/favorites`
+**4.** `DELETE /api/v1/favorites`
    * Summary: Deletes a location from favorites
    * Headers: 
    ```

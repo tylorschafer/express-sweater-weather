@@ -69,7 +69,6 @@ router.get('/', (request, response) => {
 async function mapFavs (favorites) {
   const forecasts = []
   await asyncForEach(favorites, async (favorite) => {
-    console.log(favorite.location)
     var coordinates = (await geocode(favorite.location).then(response => response.json())).results[0].geometry.location
     var darkdata = await darksky(coordinates).then(response => response.json())
     const weatherSummary = {}

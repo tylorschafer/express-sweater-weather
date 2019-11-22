@@ -4,26 +4,20 @@ const formatter = require('../../../formatters/forecastFormatter')
 const darksky = require('../../../services/darkskyService')
 const geocode = require('../../../services/googleGeocodeService')
 const router = express.Router()
+const paramCheck = setup.paramChecker
 const findKey = setup.findByKey
 const db = setup.database
 
 router.post('/', (request, response) => {
   (async () => {
-    const favorite = request.body
-    const userId = await findKey(favorite.api_key).then(result => result)
+    const req = request.body
+    const userId = await findKey(req.api_key).then(result => result)
 
     if (userId) {
-      for (const requiredParameter of ['location', 'api_key']) {
-        if (!favorite[requiredParameter]) {
-          return response
-            .status(422)
-            .send({ error: `Expected format: { location: <STRING>, api_key: <STRING}. You're missing a "${requiredParameter}" property.` })
-        }
-      }
-
-      db('favorites').insert({ location: favorite.location, user_id: userId.id })
+      paramCheck(req, response, ['location', 'api_key'])
+      db('favorites').insert({ location: req.location, user_id: userId.id })
         .then(like => {
-          response.status(200).send({ message: `${favorite.location} has been added to your favorites` })
+          response.status(200).send({ message: `${req.location} has been added to your favorites` })
         })
         .catch(error => {
           response.status(500).send({ error })
@@ -36,11 +30,12 @@ router.post('/', (request, response) => {
 
 router.delete('/', (request, response) => {
   (async () => {
-    const favorite = request.body
-    const userId = await findKey(favorite.api_key).then(result => result)
+    const req = request.body
+    const userId = await findKey(req.api_key).then(result => result)
 
     if (userId) {
-      db('favorites').where('location', favorite.location).del()
+      paramCheck(req, response, ['location', 'api_key'])
+      db('favorites').where('location', req.location).del()
         .then(like => {
           response.status(204).send({ status: '204' })
         })
@@ -58,6 +53,7 @@ router.get('/', (request, response) => {
     const req = request.body
     const userId = await findKey(req.api_key).then(result => result)
     if (userId) {
+      paramCheck(req, response, ['api_key'])
       const favorites = await db('favorites').where('user_id', userId.id).then(result => result)
       response.status(200).send(await mapFavs(favorites))
     } else {

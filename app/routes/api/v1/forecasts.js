@@ -5,15 +5,16 @@ const darksky = require('../../../services/darkskyService')
 const geocode = require('../../../services/googleGeocodeService')
 const router = express.Router()
 const findKey = setup.findByKey
+const paramCheck = setup.paramChecker
 
 router.get('/', (request, response) => {
   (async () => {
-    const key = request.body.api_key
-    const userId = await findKey(key).then(result => { return result })
+    const req = request.body
+    const userId = await findKey(req.api_key).then(result => { return result })
     const address = request.query.location
 
+    paramCheck(req, response, ['api_key'])
     if (userId) {
-      console.log((await geocode(address).then(response => response.json())))
       var coordinates = (await geocode(address).then(response => response.json())).results[0].geometry.location
       var darkdata = (await darksky(coordinates).then(response => response.json()))
       var forecast = {}

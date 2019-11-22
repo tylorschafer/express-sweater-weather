@@ -5,26 +5,20 @@ const darksky = require('../../../services/darkskyService')
 const geocode = require('../../../services/googleGeocodeService')
 const router = express.Router()
 const findKey = setup.findByKey
+const formatForecast = formatter.formatForecast
 
 router.get('/', (request, response) => {
   (async () => {
-    const key = request.body.api_key
-    const userId = await findKey(key).then(result => { return result })
+    const req = request.body
+    const userId = await findKey(req.api_key).then(result => { return result })
     const address = request.query.location
 
     if (userId) {
       var coordinates = (await geocode(address).then(response => response.json())).results[0].geometry.location
-      var darkdata = (await darksky(coordinates).then(response => response.json()))
-      var forecast = {}
-
-      forecast.location = address
-      forecast.currently = formatter.formatCurrently(darkdata)
-      forecast.hourly = formatter.formatHourly(darkdata)
-      forecast.daily = formatter.formatDaily(darkdata)
-
-      response.status(200).send(forecast)
+      var darkData = (await darksky(coordinates).then(response => response.json()))
+      response.status(200).json(formatForecast(address, darkData))
     } else {
-      response.status(422).send({ error: 'Bad api_key' })
+      response.status(422).json({ error: 'Bad api_key' })
     }
   })()
 })

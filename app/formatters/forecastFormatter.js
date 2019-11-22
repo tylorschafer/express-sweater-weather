@@ -72,8 +72,18 @@ function formatDaily (darkResponse) {
   return daily
 }
 
+function formatForecast (address, darkResponse) {
+  var forecast = {}
+  forecast.location = address
+  forecast.currently = formatCurrently(darkResponse)
+  forecast.hourly = formatHourly(darkResponse)
+  forecast.daily = formatDaily(darkResponse)
+  return forecast
+}
+
 module.exports = {
   formatCurrently: formatCurrently,
   formatHourly: formatHourly,
-  formatDaily: formatDaily
+  formatDaily: formatDaily,
+  formatForecast: formatForecast
 }
